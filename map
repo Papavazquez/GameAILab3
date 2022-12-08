@@ -1,0 +1,177 @@
+class Wall
+{
+   PVector start;
+   PVector end;
+   PVector normal;
+   PVector direction;
+   float len;
+   
+   Wall(PVector start, PVector end)
+   {
+      this.start = start;
+      this.end = end;
+      direction = PVector.sub(this.end, this.start);
+      len = direction.mag();
+      direction.normalize();
+      normal = new PVector(-direction.y, direction.x);
+   }
+   
+   // Return the mid-point of this wall
+   PVector center()
+   {
+      return PVector.mult(PVector.add(start, end), 0.5);
+   }
+   
+   void draw()
+   {
+       strokeWeight(3);
+       line(start.x, start.y, end.x, end.y);
+       if (SHOW_WALL_DIRECTION)
+       {
+          PVector marker = PVector.add(PVector.mult(start, 0.2), PVector.mult(end, 0.8));
+          circle(marker.x, marker.y, 5);
+       }
+   }
+}
+
+
+class Node
+{
+  Node east;
+  Node west;
+  Node north;
+  Node south;
+  Boolean n = false;
+  Boolean e = false;
+  Boolean s = false;
+  Boolean w = false;
+  Boolean visited = false;
+  
+  
+  
+}
+
+class Row{
+  ArrayList<Node> nodes;
+  
+  Row() 
+  {
+    nodes = new ArrayList<Node>();
+  }
+}
+
+
+
+class Map
+{
+   ArrayList<Wall> walls;
+   int columns;
+   int rows;
+   
+   
+   Map()
+   {
+      walls = new ArrayList<Wall>();
+   }
+  
+   
+   
+   void generate(int which)
+   {
+      walls.clear();
+      ArrayList<Row> RowArray = new ArrayList<Row>();
+      
+      columns = width/GRID_SIZE;
+      rows = height/GRID_SIZE;
+      
+      for (int i = 0; i < rows; i++){
+        Row row = new Row();
+        RowArray.add(row);
+        for(int j = 0; j < columns; j++){
+          Node node = new Node();
+          row.nodes.add(node);
+          
+        }
+      }
+      
+      for (int i = 0; i < rows; i++){
+        for (int j = 0; j < columns; j++){
+          if (i != 0){
+             RowArray.get(i).nodes.get(j).north = RowArray.get(i-1).nodes.get(j);
+          }
+          if (j != 0){
+            RowArray.get(i).nodes.get(j).west = RowArray.get(i).nodes.get(j-1);
+          }
+          if (j != columns-1){
+             RowArray.get(i).nodes.get(j).east = RowArray.get(i).nodes.get(j+1);
+          }
+          if (i != rows-1){
+             RowArray.get(i).nodes.get(j).south = RowArray.get(i+1).nodes.get(j);
+          }
+        }
+      }
+      
+      ArrayList <Node> Frontier = new ArrayList<Node>();
+      int randIntA = int(random(0, rows - 1));
+      int randIntB = int(random(0, columns -1));
+      
+      Frontier.add(RowArray.get(randIntA).nodes.get(randIntB));
+      
+      while (Frontier.size() < rows*columns){
+        Node randNode  = Frontier.get(int(random(0, Frontier.size()-1)));
+        int whichNeighbor = int(random(0, 3));
+        if (whichNeighbor == 0) {
+            if (randNode.north != null && randNode.visited != true){
+              Frontier.add(randNode.north);
+              randNode.n = true;
+              randNode.north.s = true;
+            }
+        }
+        if (whichNeighbor == 1) {
+            if (randNode.east != null && randNode.visited != true){
+              Frontier.add(randNode.east);
+              randNode.e = true;
+              randNode.east.w = true;
+            }
+        }
+        if (whichNeighbor == 2) {
+            if (randNode.south != null && randNode.visited != true){
+              Frontier.add(randNode.south);
+              randNode.s = true;
+              randNode.south.n = true;
+            }
+        }
+        if (whichNeighbor == 3) {
+            if (randNode.west != null && randNode.visited != true){
+              Frontier.add(randNode.west);
+              randNode.w = true;
+              randNode.west.e = true;
+            }
+        }
+        
+        
+      
+      
+      
+      }
+      
+      
+      
+     
+   }
+   
+   void update(float dt)
+   {
+      draw();
+   }
+   
+   void draw()
+   {
+      stroke(255);
+      strokeWeight(3);
+      for (Wall w : walls)
+      {
+         w.draw();
+      }
+   }
+}
