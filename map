@@ -156,7 +156,22 @@ class Map
       }
       
       
-      
+      for (int i = 0; i < rows; i++){
+        for (int j = 0; j < columns; j++){
+          if (RowArray.get(i).nodes.get(j).n == false){
+            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector ((i+1)*GRID_SIZE, j*GRID_SIZE)));
+          }
+          if (RowArray.get(i).nodes.get(j).e == false){
+            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector (i*GRID_SIZE, (j+1)*GRID_SIZE)));
+          }
+          if (RowArray.get(i).nodes.get(j).s == false){
+            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector ((i-1)*GRID_SIZE, (j)*GRID_SIZE)));
+          }
+          if (RowArray.get(i).nodes.get(j).w == false){
+            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector (i*GRID_SIZE, (j-1)*GRID_SIZE)));
+          }
+        }
+      }
      
    }
    
