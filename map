@@ -83,7 +83,8 @@ class Map
       
       columns = width/GRID_SIZE;
       rows = height/GRID_SIZE;
-      
+      println (columns);
+      println (rows);
       for (int i = 0; i < rows; i++){
         Row row = new Row();
         RowArray.add(row);
@@ -112,40 +113,44 @@ class Map
       }
       
       ArrayList <Node> Frontier = new ArrayList<Node>();
-      int randIntA = int(random(0, rows - 1));
-      int randIntB = int(random(0, columns -1));
+      int randIntA = int(random(0, rows));
+      int randIntB = int(random(0, columns));
       
       Frontier.add(RowArray.get(randIntA).nodes.get(randIntB));
       
-      while (Frontier.size() < rows*columns){
-        Node randNode  = Frontier.get(int(random(0, Frontier.size()-1)));
-        int whichNeighbor = int(random(0, 3));
+      while (Frontier.size() <= rows*columns){
+        Node randNode  = Frontier.get(int(random(0, Frontier.size())));
+        int whichNeighbor = int(random(0, 4));
         if (whichNeighbor == 0) {
-            if (randNode.north != null && randNode.visited != true){
+            if (randNode.north != null && randNode.north.visited != true){
               Frontier.add(randNode.north);
               randNode.n = true;
               randNode.north.s = true;
+              randNode.north.visited = true;
             }
         }
         if (whichNeighbor == 1) {
-            if (randNode.east != null && randNode.visited != true){
+            if (randNode.east != null && randNode.east.visited != true){
               Frontier.add(randNode.east);
               randNode.e = true;
               randNode.east.w = true;
+              randNode.east.visited = true;
             }
         }
         if (whichNeighbor == 2) {
-            if (randNode.south != null && randNode.visited != true){
+            if (randNode.south != null && randNode.south.visited != true){
               Frontier.add(randNode.south);
               randNode.s = true;
               randNode.south.n = true;
+              randNode.south.visited = true;
             }
         }
         if (whichNeighbor == 3) {
-            if (randNode.west != null && randNode.visited != true){
+            if (randNode.west != null && randNode.west.visited != true){
               Frontier.add(randNode.west);
               randNode.w = true;
               randNode.west.e = true;
+              randNode.west.visited = true;
             }
         }
         
@@ -159,16 +164,16 @@ class Map
       for (int i = 0; i < rows; i++){
         for (int j = 0; j < columns; j++){
           if (RowArray.get(i).nodes.get(j).n == false){
-            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector ((i+1)*GRID_SIZE, j*GRID_SIZE)));
+            walls.add(new Wall(new PVector (j*GRID_SIZE, i*GRID_SIZE), new PVector ((j+1)*GRID_SIZE, i*GRID_SIZE)));
           }
           if (RowArray.get(i).nodes.get(j).e == false){
-            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector (i*GRID_SIZE, (j+1)*GRID_SIZE)));
+            walls.add(new Wall(new PVector ((j+1)*GRID_SIZE, i*GRID_SIZE), new PVector ((j+1)*GRID_SIZE, (i+1)*GRID_SIZE)));
           }
           if (RowArray.get(i).nodes.get(j).s == false){
-            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector ((i-1)*GRID_SIZE, (j)*GRID_SIZE)));
+            walls.add(new Wall(new PVector (j*GRID_SIZE, (i+1)*GRID_SIZE), new PVector ((j+1)*GRID_SIZE, (i+1)*GRID_SIZE)));
           }
           if (RowArray.get(i).nodes.get(j).w == false){
-            walls.add(new Wall(new PVector (i*GRID_SIZE, j*GRID_SIZE), new PVector (i*GRID_SIZE, (j-1)*GRID_SIZE)));
+            walls.add(new Wall(new PVector (j*GRID_SIZE, i*GRID_SIZE), new PVector (j*GRID_SIZE, (i+1)*GRID_SIZE)));
           }
         }
       }
